@@ -8,31 +8,29 @@ import 'package:http/http.dart' as http;
 class FetchPollData {
   Future<List<Datum>> fetchPolls() async {
     const apiUrl = AppSecrets.fetchPollsURL;
+    log('1');
 
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-      final dynamic jsonData = json.decode(response.body);
+    final response = await http.get(Uri.parse(apiUrl));
+    log('2');
+    final dynamic jsonData = json.decode(response.body);
+    log(jsonData);
 
-      if (response.statusCode == 200 && jsonData != null) {
-        final int code = jsonData['code'] ?? 0;
+    if (response.statusCode == 200 && jsonData != null) {
+      final int code = jsonData['code'] ?? 0;
 
-        if (code == 200) {
-          final List<dynamic> dataList = jsonData['data'];
-          final List<Datum> polls =
-              dataList.map((data) => Datum.fromJson(data)).toList();
-          return polls;
-        } else {
-          final String reason = jsonData['reason'] ?? 'Unknown error';
-          log('Failed to fetch polls. Reason: $reason');
-          return [];
-        }
+      if (code == 200) {
+        final List<dynamic> dataList = jsonData['data'];
+        final List<Datum> polls =
+            dataList.map((data) => Datum.fromJson(data)).toList();
+        return polls;
       } else {
-        log("Failed to fetch polls. Status code: ${response.statusCode}");
-        log("Response: ${response.body}");
+        final String reason = jsonData['reason'] ?? 'Unknown error';
+        log('Failed to fetch polls. Reason: $reason');
         return [];
       }
-    } catch (error) {
-      log("Error fetching polls: $error");
+    } else {
+      log("Failed to fetch polls. Status code: ${response.statusCode}");
+      log("Response: ${response.body}");
       return [];
     }
   }

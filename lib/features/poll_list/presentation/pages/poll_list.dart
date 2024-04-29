@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:poll_app/core/theme/app_palette.dart';
@@ -20,6 +22,7 @@ class _PollListState extends State<PollList> {
   }
 
   final FetchPollData fetchPollData = FetchPollData();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -28,9 +31,12 @@ class _PollListState extends State<PollList> {
           title: Text('All Polls', style: AppPalette.appbarText),
           centerTitle: true,
           flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [AppPalette.gradient1, AppPalette.gradient2]))),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppPalette.gradient1, AppPalette.gradient2],
+              ),
+            ),
+          ),
         ),
         body: Padding(
           padding:
@@ -38,18 +44,19 @@ class _PollListState extends State<PollList> {
           child: BlocBuilder<FetchPollBloc, FetchPollState>(
             builder: (context, state) {
               return ListView.builder(
-                  itemCount: state.polls.length,
-                  itemBuilder: (context, index) {
-                    final pollData = state.polls[index];
-
-                    return PollGrids(
-                        noOfLikes: pollData.noOfLikes,
-                        comments: pollData.comments,
-                        id: pollData.id,
-                        textOptions: pollData.textOptions,
-                        topic: pollData.topic!,
-                        statement: pollData.statement!);
-                  });
+                itemCount: state.polls.length,
+                itemBuilder: (context, index) {
+                  final pollData = state.polls[index];
+                  return PollGrids(
+                    noOfLikes: pollData.noOfLikes,
+                    comments: pollData.comments,
+                    id: pollData.id,
+                    textOptions: pollData.textOptions,
+                    topic: pollData.topic!,
+                    statement: pollData.statement!,
+                  );
+                },
+              );
             },
           ),
         ),

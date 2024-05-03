@@ -8,12 +8,9 @@ import 'package:http/http.dart' as http;
 class FetchPollData {
   Future<List<Datum>> fetchPolls() async {
     const apiUrl = AppSecrets.fetchPollsURL;
-    log('1');
 
     final response = await http.get(Uri.parse(apiUrl));
-    log('2');
     final dynamic jsonData = json.decode(response.body);
-    log(jsonData);
 
     if (response.statusCode == 200 && jsonData != null) {
       final int code = jsonData['code'] ?? 0;

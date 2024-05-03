@@ -1,11 +1,17 @@
 part of 'fetch_poll_bloc.dart';
 
-class FetchPollState {
-  final List<Datum> polls;
+class FetchPollState {}
 
-  FetchPollState(this.polls);
+final class FetchPollInitial extends FetchPollState {}
+
+final class FetchPollFailure extends FetchPollState {
+  final String errorMessage;
+
+  FetchPollFailure(this.errorMessage);
 }
 
-final class FetchPollInitial extends FetchPollState {
-  FetchPollInitial(super.polls);
+final class FetchPollSuccess extends FetchPollState {
+  final List<Datum> polls;
+
+  FetchPollSuccess(this.polls);
 }

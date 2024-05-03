@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:poll_app/core/common/widgets/loader.dart';
 import 'package:poll_app/core/theme/app_palette.dart';
 import 'package:poll_app/features/poll_list/domain/functions/functions.dart';
 import 'package:poll_app/features/poll_list/presentation/bloc/fetch_poll_bloc.dart';
@@ -41,22 +40,35 @@ class _PollListState extends State<PollList> {
         body: Padding(
           padding:
               const EdgeInsets.only(top: 20, left: 12, right: 12, bottom: 10),
-          child: BlocBuilder<FetchPollBloc, FetchPollState>(
+          child: BlocConsumer<FetchPollBloc, FetchPollState>(
+            listener: (context, state) {
+              if (state is FetchPollFailure) {
+                Center(child: Text(state.errorMessage));
+              } else if (state is FetchPollInitial) {
+                const Loader();
+              }
+            },
             builder: (context, state) {
-              return ListView.builder(
-                itemCount: state.polls.length,
-                itemBuilder: (context, index) {
-                  final pollData = state.polls[index];
-                  return PollGrids(
-                    noOfLikes: pollData.noOfLikes,
-                    comments: pollData.comments,
-                    id: pollData.id,
-                    textOptions: pollData.textOptions,
-                    topic: pollData.topic!,
-                    statement: pollData.statement!,
-                  );
-                },
-              );
+              if (state is FetchPollSuccess) {
+                return ListView.builder(
+                  itemCount: state.polls.length,
+                  itemBuilder: (context, index) {
+                    final pollData = state.polls[index];
+                    return PollGrids(
+                      noOfLikes: pollData.noOfLikes,
+                      comments: pollData.comments,
+                      id: pollData.id,
+                      textOptions: pollData.textOptions,
+                      topic: pollData.topic!,
+                      statement: pollData.statement!,
+                    );
+                  },
+                );
+              } else if (state is FetchPollFailure) {
+                return Center(child: Text(state.errorMessage));
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
             },
           ),
         ),
